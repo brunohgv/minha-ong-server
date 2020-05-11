@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OngEntity } from './ong.entity';
@@ -15,7 +15,14 @@ export class OngService {
   }
 
   async getById(id: string) {
-    return await this.ongRepository.find({ where: { id } });
+    const ong = await this.ongRepository.findOne({ id });
+    if (!ong) {
+      throw new HttpException(
+        'There is no Ong with this ID',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return ong;
   }
 
   async create(data: OngDTO) {
@@ -25,12 +32,26 @@ export class OngService {
   }
 
   async update(id: string, data: Partial<OngDTO>) {
+    const ong = await this.ongRepository.findOne({ id });
+    if (!ong) {
+      throw new HttpException(
+        'There is no Ong with this ID',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     await this.ongRepository.update({ id }, data);
     return await this.ongRepository.findOne({ id });
   }
 
   async delete(id: string) {
+    const ong = await this.ongRepository.findOne({ id });
+    if (!ong) {
+      throw new HttpException(
+        'There is no Ong with this ID',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     await this.ongRepository.delete({ id });
-    return { deleted: true };
+    return ong;
   }
 }

@@ -6,11 +6,13 @@ import {
   Delete,
   Body,
   Param,
+  UsePipes,
 } from '@nestjs/common';
 import { OngService } from './ong.service';
 import { OngDTO } from './ong.dto';
+import { ValidationPipe } from 'src/shared/validation.pipe';
 
-@Controller('ongs')
+@Controller('api/ongs')
 export class OngController {
   constructor(private ongService: OngService) {}
 
@@ -25,11 +27,13 @@ export class OngController {
   }
 
   @Post()
+  @UsePipes(new ValidationPipe())
   createOng(@Body() data: OngDTO) {
     return this.ongService.create(data);
   }
 
   @Put(':id')
+  @UsePipes(new ValidationPipe())
   updateOng(@Param('id') id: string, @Body() data: Partial<OngDTO>) {
     return this.ongService.update(id, data);
   }

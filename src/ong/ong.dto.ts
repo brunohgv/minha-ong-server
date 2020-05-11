@@ -1,5 +1,14 @@
-export interface OngDTO {
+import { IsString, IsInt, Min, Max } from 'class-validator';
+
+export class OngDTO {
+  @IsString()
   name: string;
+
+  @IsString()
   description: string;
-  created: Date;
+
+  @IsInt()
+  @Min(0)
+  @Max(new Date().getFullYear())
+  createdYear: number;
 }

@@ -11,6 +11,6 @@ export class OngEntity {
   @Column('text')
   description: string;
 
-  @Column('date')
-  created: Date;
+  @Column('int')
+  createdYear: number;
 }
