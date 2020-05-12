@@ -7,10 +7,13 @@ import {
   Body,
   Param,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { OngService } from './ong.service';
 import { OngDTO } from './ong.dto';
 import { ValidationPipe } from 'src/shared/validation.pipe';
+import { AuthGuard } from 'src/shared/auth.guart';
+import { User } from 'src/user/user.decorator';
 
 @Controller('api/ongs')
 export class OngController {
@@ -27,19 +30,26 @@ export class OngController {
   }
 
   @Post()
+  @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
-  createOng(@Body() data: OngDTO) {
-    return this.ongService.create(data);
+  createOng(@User('id') userId: string, @Body() data: OngDTO) {
+    return this.ongService.create(userId, data);
   }
 
   @Put(':id')
+  @UseGuards(new AuthGuard())
   @UsePipes(new ValidationPipe())
-  updateOng(@Param('id') id: string, @Body() data: Partial<OngDTO>) {
-    return this.ongService.update(id, data);
+  updateOng(
+    @User('id') userId: string,
+    @Param('id') id: string,
+    @Body() data: Partial<OngDTO>,
+  ) {
+    return this.ongService.update(userId, id, data);
   }
 
   @Delete(':id')
-  deleteOng(@Param('id') id: string) {
-    return this.ongService.delete(id);
+  @UseGuards(new AuthGuard())
+  deleteOng(@User('id') userId: string, @Param('id') id: string) {
+    return this.ongService.delete(userId, id);
   }
 }

@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
-import { UserLoginDTO, UserDTO } from './user.dto';
+import { UserLoginDTO, UserRegisterDTO, UserVO } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -11,28 +11,31 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async getAll() {
-    const users = await this.userRepository.find();
-    return users.map(user => user.toResponseObject(false));
+  async getAll(): Promise<UserVO[]> {
+    const users = await this.userRepository.find({ relations: ['ongs'] });
+    return users.map(user => user.toResponseObject());
   }
 
-  async login(data: UserLoginDTO) {
+  async login(data: UserLoginDTO): Promise<UserVO> {
     const { email, password } = data;
     const user = await this.userRepository.findOne({ where: { email } });
+
     if (!user) {
       throw new HttpException(
         'There is no registered user with this email',
         HttpStatus.BAD_REQUEST,
       );
     }
+
     if (!(await user.comparePassword(password))) {
       throw new HttpException('Invalid Password', HttpStatus.UNAUTHORIZED);
     }
-    return user.toResponseObject();
+
+    return user.toResponseObject(true);
   }
 
-  async register(data: UserDTO) {
-    const { email, username, password } = data;
+  async register(data: UserRegisterDTO): Promise<UserVO> {
+    const { email, username } = data;
 
     let user = await this.userRepository.findOne({
       where: [{ email }, { username }],
@@ -56,6 +59,6 @@ export class UserService {
     await this.userRepository.save(user);
     const savedUser = await this.userRepository.findOne({ where: { email } });
 
-    return savedUser.toResponseObject();
+    return savedUser.toResponseObject(true);
   }
 }

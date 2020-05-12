@@ -4,10 +4,12 @@ import {
   CreateDateColumn,
   Column,
   BeforeInsert,
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { response } from 'express';
+import { OngEntity } from 'src/ong/ong.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -26,20 +28,23 @@ export class UserEntity {
   @Column({ type: 'text', unique: true })
   email: string;
 
+  @OneToMany(
+    type => OngEntity,
+    ongs => ongs.creator,
+  )
+  ongs: OngEntity[];
+
   @BeforeInsert()
   hashPassword() {
-    console.log(
-      '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TRIGGERED',
-    );
     this.password = bcrypt.hashSync(this.password, 10);
   }
 
-  toResponseObject(showToken = true) {
-    const { id, created, username, email, token } = this;
-    const responseObject = { id, created, username, email, token };
-    if (!showToken) {
-      delete responseObject.token;
-    }
+  toResponseObject(showToken = false) {
+    const { id, created, username, email, token, ongs } = this;
+    const responseObject = { id, created, username, email, token, ongs };
+
+    if (!showToken) delete responseObject.token;
+
     return responseObject;
   }
 

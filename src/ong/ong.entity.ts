@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+} from 'typeorm';
+import { UserEntity } from 'src/user/user.entity';
 
 @Entity('ong')
 export class OngEntity {
@@ -13,4 +22,16 @@ export class OngEntity {
 
   @Column('int')
   createdYear: number;
+
+  @CreateDateColumn()
+  created: Date;
+
+  @UpdateDateColumn()
+  updated: Date;
+
+  @ManyToOne(
+    type => UserEntity,
+    creator => creator.ongs,
+  )
+  creator: UserEntity;
 }
