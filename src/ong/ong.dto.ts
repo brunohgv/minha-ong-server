@@ -1,7 +1,5 @@
 import { IsString, IsInt, Min, Max } from 'class-validator';
-import { ManyToOne } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
-import { UserVO } from 'src/user/user.dto';
+import { UserVO } from '../user/user.dto';
 
 export class OngDTO {
   @IsString()

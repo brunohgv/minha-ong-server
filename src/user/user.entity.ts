@@ -8,8 +8,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { response } from 'express';
-import { OngEntity } from 'src/ong/ong.entity';
+import { OngEntity } from '../ong/ong.entity';
 
 @Entity('user')
 export class UserEntity {

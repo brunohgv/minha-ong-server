@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OngEntity } from './ong.entity';
 import { OngDTO, OngVO } from './ong.dto';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Injectable()
 export class OngService {

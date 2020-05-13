@@ -3,7 +3,7 @@ import { OngController } from './ong.controller';
 import { OngService } from './ong.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OngEntity } from './ong.entity';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([OngEntity, UserEntity])],

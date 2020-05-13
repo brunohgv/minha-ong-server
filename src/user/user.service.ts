@@ -28,7 +28,7 @@ export class UserService {
     }
 
     if (!(await user.comparePassword(password))) {
-      throw new HttpException('Invalid Password', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED);
     }
 
     return user.toResponseObject(true);

@@ -2,12 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 @Entity('ong')
 export class OngEntity {

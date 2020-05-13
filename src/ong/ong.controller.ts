@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { OngService } from './ong.service';
 import { OngDTO } from './ong.dto';
-import { ValidationPipe } from 'src/shared/validation.pipe';
-import { AuthGuard } from 'src/shared/auth.guart';
-import { User } from 'src/user/user.decorator';
+import { ValidationPipe } from '../shared/validation.pipe';
+import { AuthGuard } from '../shared/auth.guart';
+import { User } from '../user/user.decorator';
 
 @Controller('api/ongs')
 export class OngController {
