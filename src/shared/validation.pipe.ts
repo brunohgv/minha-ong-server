@@ -13,7 +13,7 @@ export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, metadata: ArgumentMetadata) {
     if (value instanceof Object && this.isEmpty(value)) {
       throw new HttpException(
-        'Validation Falied: No body submitted',
+        'Validation Failed: No body submitted',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -37,9 +37,9 @@ export class ValidationPipe implements PipeTransform<any> {
     return value;
   }
 
-  private toValidate(metatype): boolean {
-    const types = [String, Boolean, Number, Array, Object];
-    return !types.find(type => metatype === type);
+  private toValidate(metatype: Function): boolean {
+    const types: Function[] = [String, Boolean, Number, Array, Object];
+    return !types.includes(metatype);
   }
 
   private formatErrors(errors: any[]) {
@@ -52,10 +52,7 @@ export class ValidationPipe implements PipeTransform<any> {
       .join(', ');
   }
 
-  private isEmpty(value: any) {
-    if (Object.keys(value).length > 0) {
-      return false;
-    }
-    return true;
+  private isEmpty(value: any): boolean {
+    return !Object.keys(value).length;
   }
 }

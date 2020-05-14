@@ -7,6 +7,7 @@ import { OngEntity } from '../ong/ong.entity';
 import { getRepository, Repository } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { UserRegisterDTO } from './user.dto';
 dotenv.config();
 
 describe('User Service', () => {
@@ -108,9 +109,108 @@ describe('User Service', () => {
         });
       }
 
-      expect(doLogin).rejects.toThrow(
+      await expect(doLogin).rejects.toThrow(
         new HttpException('Incorrect Password', HttpStatus.UNAUTHORIZED),
       );
+    });
+
+    it('should return an error if the user does not exist', async () => {
+      async function doLogin() {
+        await userService.login({
+          email: 'test@test.com',
+          password: 'incorrectpassword',
+        });
+      }
+
+      try {
+        await doLogin();
+      } catch (error) {
+        expect(error.message).toEqual(
+          'There is no registered user with this email',
+        );
+        expect(error.status).toEqual(HttpStatus.NOT_FOUND);
+      }
+
+      await expect(doLogin).rejects.toThrowError(HttpException);
+    });
+  });
+
+  describe('Register', () => {
+    it('should return a new user when register', async () => {
+      const testUser = {
+        email: 'test@test.com',
+        username: 'test',
+        password: 'password',
+      };
+
+      const response = await userService.register(testUser);
+
+      expect(response).not.toBeNull();
+      expect(response).not.toHaveProperty('password');
+      expect(response).toHaveProperty('email');
+      expect(response).toHaveProperty('username');
+      expect(response).toHaveProperty('id');
+      expect(response).toHaveProperty('token');
+    });
+
+    it('should fail when the email already exists', async () => {
+      const persistedUser: UserRegisterDTO = {
+        email: 'test@test.com',
+        username: 'test',
+        password: 'password',
+      };
+      await userService.register(persistedUser);
+
+      const newUser: UserRegisterDTO = {
+        email: 'test@test.com',
+        username: 'test2',
+        password: 'password2',
+      };
+
+      async function doRegister() {
+        return await userService.register(newUser);
+      }
+
+      try {
+        await doRegister();
+      } catch (error) {
+        expect(error.message).toEqual(
+          'The informed email is already registered',
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
+
+      await expect(doRegister).rejects.toThrow(HttpException);
+    });
+
+    it('should fail when the username already exists', async () => {
+      const persistedUser: UserRegisterDTO = {
+        email: 'test@test.com',
+        username: 'test',
+        password: 'password',
+      };
+      await userService.register(persistedUser);
+
+      const newUser: UserRegisterDTO = {
+        email: 'test2@test.com',
+        username: 'test',
+        password: 'password2',
+      };
+
+      async function doRegister() {
+        return await userService.register(newUser);
+      }
+
+      try {
+        await doRegister();
+      } catch (error) {
+        expect(error.message).toEqual(
+          'The informed username is already registered',
+        );
+        expect(error.status).toEqual(HttpStatus.BAD_REQUEST);
+      }
+
+      await expect(doRegister).rejects.toThrow(HttpException);
     });
   });
 });

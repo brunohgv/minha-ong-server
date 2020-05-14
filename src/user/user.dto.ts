@@ -1,7 +1,8 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsEmail } from 'class-validator';
+import { OngEntity } from 'src/ong/ong.entity';
 
 export class UserLoginDTO {
-  @IsNotEmpty()
+  @IsEmail()
   email: string;
   @IsNotEmpty()
   password: string;
@@ -10,16 +11,17 @@ export class UserLoginDTO {
 export class UserRegisterDTO {
   @IsNotEmpty()
   username: string;
-  @IsNotEmpty()
+  @IsEmail()
   email: string;
   @IsNotEmpty()
   password: string;
 }
 
 export class UserVO {
-  id?: string;
+  id: string;
   username: string;
   email: string;
   created: Date;
   token?: string;
+  ongs?: OngEntity[];
 }

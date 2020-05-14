@@ -23,7 +23,7 @@ export class UserService {
     if (!user) {
       throw new HttpException(
         'There is no registered user with this email',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
 
