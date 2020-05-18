@@ -9,6 +9,7 @@ import {
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { OngEntity } from '../ong/ong.entity';
+import { UserVO } from './user.dto';
 
 @Entity('user')
 export class UserEntity {
@@ -38,9 +39,9 @@ export class UserEntity {
     this.password = bcrypt.hashSync(this.password, 10);
   }
 
-  toResponseObject(showToken = false) {
-    const { id, created, username, email, token, ongs } = this;
-    const responseObject = { id, created, username, email, token, ongs };
+  toResponseObject(showToken = false): UserVO {
+    const { id, created, username, email, token } = this;
+    const responseObject = { id, created, username, email, token };
 
     if (!showToken) delete responseObject.token;
 

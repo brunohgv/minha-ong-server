@@ -62,8 +62,8 @@ describe('User Service', () => {
 
       const users = await userService.getAll();
 
-      expect(users).toContainEqual({ ...user1.toResponseObject(), ongs: [] });
-      expect(users).toContainEqual({ ...user2.toResponseObject(), ongs: [] });
+      expect(users).toContainEqual({ ...user1.toResponseObject() });
+      expect(users).toContainEqual({ ...user2.toResponseObject() });
       expect(users.length).toEqual(2);
     });
 

@@ -53,7 +53,16 @@ export class OngService {
 
   async create(userId: string, data: OngDTO) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    const ong = this.ongRepository.create({ ...data, creator: user });
+    let ong = await this.ongRepository.findOne({ where: { name: data.name } });
+
+    if (ong) {
+      throw new HttpException(
+        'An ONG with that name already exists',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    ong = this.ongRepository.create({ ...data, creator: user });
     await this.ongRepository.save(ong);
     return this.toResponseObject(ong);
   }
