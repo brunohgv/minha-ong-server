@@ -1,0 +1,28 @@
+language: node_js
+
+node_js:
+  - 'node'
+  - '10'
+  - '8'
+
+services:
+  - postgresql
+
+install:
+  - npm install
+
+git:
+  depth: 1
+
+before_script:
+  - psql -c 'create database e2e_test;' -U postgres
+  - psql -c "CREATE USER test WITH PASSWORD 'test';" -U postgres
+  - psql -c "GRANT ALL PRIVILEGES ON DATABASE e2e_test TO test;" -U postgres
+  - npm run typeorm:cli schema:sync
+
+script:
+  - npm run build
+  - npm run test
+
+after_script:
+  - npm run test:cov
