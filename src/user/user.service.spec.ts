@@ -46,6 +46,16 @@ describe('User Service', () => {
       .execute();
   });
 
+  afterAll(async () => {
+    await userRepository
+      .createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .execute();
+
+    await app.close();
+  });
+
   describe('Get All Users', () => {
     it('Should return all users', async () => {
       const user1 = userRepository.create({
@@ -117,7 +127,7 @@ describe('User Service', () => {
     it('should return an error if the user does not exist', async () => {
       async function doLogin() {
         await userService.login({
-          email: 'test@test.com',
+          email: 'unregisteredemail@test.com',
           password: 'incorrectpassword',
         });
       }
@@ -186,14 +196,14 @@ describe('User Service', () => {
     it('should fail when the username already exists', async () => {
       const persistedUser: UserRegisterDTO = {
         email: 'test@test.com',
-        username: 'test',
+        username: 'test2',
         password: 'password',
       };
       await userService.register(persistedUser);
 
       const newUser: UserRegisterDTO = {
         email: 'test2@test.com',
-        username: 'test',
+        username: 'test2',
         password: 'password2',
       };
 

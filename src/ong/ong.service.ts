@@ -92,6 +92,6 @@ export class OngService {
     this.checkOwnership(ong, userId);
 
     await this.ongRepository.delete({ id });
-    return ong;
+    return this.toResponseObject(ong);
   }
 }
